@@ -51,7 +51,7 @@ def create_artist_to_song_table(cur, con):
         pass
 
     # Example entry:
-    #cur.execute('INSERT INTO artists VALUES(%s, %s)', ('/Kanye-West/', '/Kanye-West/Mercy/'))
+    #cur.execute('INSERT INTO artist_to_song VALUES(%s, %s)', ('/Kanye-West/', '/Kanye-West/Mercy/'))
 
 # Create producer to song mapping table in SQL
 def create_producer_to_song_table(cur, con):
@@ -62,7 +62,7 @@ def create_producer_to_song_table(cur, con):
         pass
 
     # Exmaple entry:
-    #cur.execute('INSERT INTO producers VALUES(%s, %s)', ('/Kanye-West/', '/Kanye-West/Mercy/Power'))
+    #cur.execute('INSERT INTO producer_to_song VALUES(%s, %s)', ('/Kanye-West/', '/Kanye-West/Mercy/Power'))
 
 # Create song to song relatioship table in SQL
 def create_song_to_song_table(cur, con):
@@ -74,4 +74,4 @@ def create_song_to_song_table(cur, con):
         pass
 
     # Example entry:
-    #cur.execute('INSERT INTO songs VALUES(%s, %s, %s)', ('/Black-Eyed-Peas/Boom-Boom-Pow/', '/Daft-Punk/Harder,-Better,-Faster,-Stronger/', 1))
+    #cur.execute('INSERT INTO song_to_song VALUES(%s, %s, %s)', ('/Black-Eyed-Peas/Boom-Boom-Pow/', '/Daft-Punk/Harder,-Better,-Faster,-Stronger/', 1))
