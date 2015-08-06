@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import psycopg2
 import time
+import numpy as np
 
 class GetData(object):
     def __init__(self):

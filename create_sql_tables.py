@@ -40,7 +40,7 @@ def create_song_table(cur, con):
         pass
 
     # Example entry:
-    #cur.execute('INSERT INTO songs VALUES(%s, %s, %s, %s, %d, %s)', ('/Lil-Jon/Lovers-%26-Friends/', 'Lovers & Friends', 'Crunk Juice', 'TVT', 2004, '/genre/Hip-Hop/'))
+    #cur.execute('INSERT INTO songs VALUES(%s, %s, %s, %s, %s, %s)', ('/Lil-Jon/Lovers-%26-Friends/', 'Lovers & Friends', 'Crunk Juice', 'TVT', 2004, '/genre/Hip-Hop/'))
 
 # Create artist to song mapping table in SQL
 def create_artist_to_song_table(cur, con):
@@ -74,4 +74,4 @@ def create_song_to_song_table(cur, con):
         pass
 
     # Example entry:
-    #cur.execute('INSERT INTO songs VALUES(%s, %s, %d)', ('/Black-Eyed-Peas/Boom-Boom-Pow/', '/Daft-Punk/Harder,-Better,-Faster,-Stronger/', 1))
+    #cur.execute('INSERT INTO songs VALUES(%s, %s, %s)', ('/Black-Eyed-Peas/Boom-Boom-Pow/', '/Daft-Punk/Harder,-Better,-Faster,-Stronger/', 1))
