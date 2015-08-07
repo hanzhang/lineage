@@ -1,10 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
-import re
-import psycopg2
-import time
-import numpy as np
-
 class GetData(object):
     def __init__(self):
         self.url_base = 'http://www.whosampled.com'
@@ -15,7 +8,6 @@ class GetData(object):
         self.used_artists = set([])
         self.unused_artists = set([])
         self.used_producers = set([])
-        self.unused_producers = set([])
         self.used_songs = set([])
         self.unused_songs = set([])
 
@@ -45,6 +37,7 @@ class GetData(object):
             for page in xrange(pages):
                 decomp_url[-2] = str(page + 1)
                 page_url = '/'.join(decomp_url)
+                print page_url
                 artists += self._get_link_and_text_data(page_url, '.artistName a')
         
         conn = None
@@ -88,7 +81,6 @@ class GetData(object):
         OUTPUT: saves producer and song data into SQL database
         '''
         producers = []
-        self.song_genre = ''
         self.sampled_from_song_url = []
         self.sampled_by_song_url = []
         self.cover_of_song_url = []
@@ -99,11 +91,23 @@ class GetData(object):
         soup = self._get_soup(url)
         
         # Basic song info
-        name = soup.select('h1[itemprop="name"]')[0].text
+        try:
+            name = soup.select('h1[itemprop="name"]')[0].text
+        except:
+            name = ''
         artists = [x['href'] for x in soup.select('h2 a')]
-        album = soup.select('.trackReleaseDetails h3')[0].text
-        main_label = re.split('; |, |\*|\n', soup.select('.trackReleaseDetails h4')[0].text)[0]
-        year = int(soup.select('.trackReleaseDetails')[0].contents[4].strip())
+        try:
+            album = soup.select('.trackReleaseDetails h3')[0].text
+        except:
+            album = ''
+        try:
+            main_label = re.split('; |, |\*|\n', soup.select('.trackReleaseDetails h4')[0].text)[0]
+        except:
+            main_label = ''
+        try:
+            year = int(soup.select('.trackReleaseDetails')[0].contents[4].strip())
+        except:
+            year = 0
         if len(soup.select('.trackReleaseDetails a')) > 0:
             producers = self._get_link_and_text_data(song, '.trackReleaseDetails a')
         else:
@@ -133,7 +137,7 @@ class GetData(object):
             if producer[0] in self.used_producers:
                 continue
             else:
-                self.unused_artists.add(producer[0])
+                self.used_producers.add(producer[0])
                 cur.execute('INSERT INTO producers VALUES(%s, %s)', producer)
                 conn.commit()
             cur.execute('INSERT INTO producer_to_song VALUES(%s, %s)', (producer[0], song))
@@ -244,24 +248,25 @@ class GetData(object):
         return zip(link, text)
     
     # Write to song2song SQL table
-    def _write_song_to_song_table(cur, conn, song1, song_list, code):
+    def _write_song_to_song_table(self, cur, conn, song1, song_list, code):
         for song in song_list:
             cur.execute('INSERT INTO song_to_song VALUES(%s, %s, %s)', (song1, song, code))
             conn.commit()
     
     # Used to scrape for all songs
     def get_songs(self):
-        genre = '/genre/Hip-Hop/'
-        self.used_genres.add(genre)
-        self._get_artists_by_genre(genre)
-        self.song_genre = genre
-        while len(self.unused_artists) > 0:
-            artist = self.unused_artists.pop()
-            print artist
-            self.used_artists.add(artist)
-            self._get_songs_by_artist(artist)
-            while len(self.unused_songs) > 0:
-                song = self.unused_songs.pop()
-                self.used_songs.add(song)
-                self._get_song_data(song)
-            time.sleep(10 * np.random.rand())
+        while len(self.unused_genres) > 0:
+            genre = self.unused_genres.pop()
+            self.used_genres.add(genre)
+            self._get_artists_by_genre(genre)
+            self.song_genre = genre
+            while len(self.unused_artists) > 0:
+                artist = self.unused_artists.pop()
+                print artist
+                self.used_artists.add(artist)
+                self._get_songs_by_artist(artist)
+                while len(self.unused_songs) > 0:
+                    song = self.unused_songs.pop()
+                    self.used_songs.add(song)
+                    self._get_song_data(song)
+                time.sleep(5 * np.random.rand())
