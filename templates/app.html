@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>BeatLineage</title>
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="http://thedanyaal.com/js/jquery.js"></script>
+        <script type="text/javascript">
+
+            // model variables
+            var selectedValues = [];
+            var suggestions = [];
+
+            function getRecommendations(selectedValues) {
+                // call endpoint to get recommendations
+                console.log('finding recommendations')
+            }
+
+            function getAutoCompleteSuggestions(searchVal) {
+                // call endpoint to get getAutoCompleteSuggestions
+                console.log(searchVal);
+            }
+
+            function addAutoCompleteSuggestionToSearchView(suggestions) {
+                // clear current AutoCompleteSuggestionToView
+                $('#autoCompleteList').empty();
+                // add new AutoCompleteSuggestionToView
+                for(var i = 0; i < suggestions.length; ++i) {
+                    var autoCompleteSuggestion = '<div class="autoCompleteSuggestion" onclick="selectSearchValue(' + i + ', null)">' + suggestions[i] + '</div>';
+                    $('#autoCompleteList').append(autoCompleteSuggestion);
+                }
+            }
+
+            function selectSearchValue(index, word) {
+                // handle both enter key and typing in word
+                if (index != null) {
+                    var autoCompleteSuggestion = suggestions[index]
+                } else {
+                    var autoCompleteSuggestion = word;
+                }
+                // add selected value to view
+                var selectedValue = '<div class="selectedValue">' + autoCompleteSuggestion + '</div>';
+                $('#selectedValues').append(selectedValue);
+                // add selected value to the model
+                selectedValue.add('autoCompleteSuggestion');
+            }
+
+            $(document).ready(function() {
+                // handle key strokes
+                $("#searchBar").keydown(function(event) {
+                    var searchVal = $('#searchBar').val();
+                    // after search query is over length 3, try autocomplete
+                    if(searchVal.length >= 3) {
+                        // call search reccomendation function and store result in suggestions list
+                        getAutoCompleteSuggestions(searchVal);
+                        suggestions = ['Eminem', 'Rihanna', 'Pink Floyd', 'The Wiggles', 'Hans Zimmer'];
+                        // add suggestions list to screen.
+                        addAutoCompleteSuggestionToSearchView(suggestions);
+                    }
+                    // if keystroke was enter key, select the value
+                    if(event.keyCode == 13){
+                        selectSearchValue(null, searchVal);
+                        $('#searchBar').val('');
+                    }
+                });
+            });
+        </script>
+
+
+        <!-- Styles -->
+        <style type="text/css">
+
+            body {
+                font-family: 'lucida sans', 'trebuchet MS', 'Tahoma';
+            }
+
+            #selectedValues {
+                display: flex;
+                min-height: 45px;
+                width: 572px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                margin-bottom: 10px;
+            }
+
+            .selectedValue {
+                height: 20px;
+                padding: 10px;
+                border-radius: 500px;
+                background: LightBlue;
+                margin-right: 10px;
+                margin-bottom: 5px
+            }
+
+            #searchContainer {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            #searchBar {
+                width: 500px;
+                height: 40px;
+                padding: 10px 5px;
+                font: bold 15px 'lucida sans', 'trebuchet MS', 'Tahoma';
+                border: 0;
+                background: #eee;
+                border-radius: 3px 0 0 3px;
+                box-shadow: 0 0 2px rgba(0,0,0,.1)
+            }
+
+            #searchBar:focus {
+                outline: 0;
+                background: #fff;
+                box-shadow: 0 0 2px rgba(0,0,0,.8)
+            }
+
+            #generateRecommendationsButton {
+                overflow: visible;
+                overflow: visible;
+                position: relative;
+                border: 0;
+                padding: 0;
+                cursor: pointer;
+                height: 40px;
+                width: 120px;
+                font: bold 15px/40px 'lucida sans', 'trebuchet MS', 'Tahoma';
+                color: white;
+                text-transform: uppercase;
+                background: #3cd83c;
+                border-radius: 0 3px 3px 0;
+                text-shadow: 0 -1px 0 rgba(0, 0, 0, .3);
+            }
+
+            #generateRecommendationsButton:hover {
+                background: #21a621;
+            }
+
+            .autoCompleteSuggestion {
+                width: 495px;
+                height: 35px;
+                background: #eee;
+                font: 15px/40px 'lucida sans', 'trebuchet MS', 'Tahoma';
+                border-bottom: #333 solid 1px;
+                box-shadow: 0 0 2px rgba(0,0,0,.1);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 5px 0 0 5px;
+            }
+
+            .autoCompleteSuggestion:hover {
+                background: #ddd;
+            }
+
+            .autoCompleteSuggestion:last-child {
+                border-bottom: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>BeatLineage</h1>
+        <form action="/search" id="searchContainer" method='POST'>
+            <div id='selectedValues'></div>
+            <div style="display: flex; flex-direction: row;">
+                <div>
+                    <input id='searchBar' placeholder="Search song, artist, or producer" type="text" name="search">
+                    <div id="autoCompleteList"></div>
+                </div>
+                <button id='generateRecommendationsButton'>Recommend</button>
+            </div>
+            <input type="submit" />
+        </form>
+    </body>
+</html>
